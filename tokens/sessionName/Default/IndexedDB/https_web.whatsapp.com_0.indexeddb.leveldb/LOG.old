@@ -1,0 +1,45 @@
+2024/06/13-02:51:13.462 4c54 Reusing MANIFEST C:\Users\User\Documents\Programacao\Node\whatsapp-bot\tokens\sessionName\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2024/06/13-02:51:13.463 4c54 Recovering log #658
+2024/06/13-02:51:13.471 4c54 Reusing old log C:\Users\User\Documents\Programacao\Node\whatsapp-bot\tokens\sessionName\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000658.log 
+2024/06/13-02:51:15.179 42fc Level-0 table #673: started
+2024/06/13-02:51:15.191 42fc Level-0 table #673: 209575 bytes OK
+2024/06/13-02:51:15.195 42fc Delete type=0 #658
+2024/06/13-02:51:15.195 370 Manual compaction at level-0 from '\x00J\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00K\x00\x00\x00' @ 0 : 0; will stop at '\x00J\x00\x00\x05' @ 2201574 : 1
+2024/06/13-02:51:15.196 370 Compacting 1@0 + 1@1 files
+2024/06/13-02:51:15.207 370 Generated table #674@0: 3967 keys, 104881 bytes
+2024/06/13-02:51:15.222 370 Generated table #675@0: 7872 keys, 167098 bytes
+2024/06/13-02:51:15.222 370 Compacted 1@0 + 1@1 files => 271979 bytes
+2024/06/13-02:51:15.226 370 compacted to: files[ 0 2 17 0 0 0 0 ]
+2024/06/13-02:51:15.227 370 Delete type=2 #673
+2024/06/13-02:51:15.227 370 Manual compaction at level-0 from '\x00J\x00\x00\x05' @ 2201574 : 1 .. '\x00K\x00\x00\x00' @ 0 : 0; will stop at (end)
+2024/06/13-02:51:17.250 4c54 Compacting 1@1 + 8@2 files
+2024/06/13-02:51:17.354 4c54 Generated table #676@1: 33132 keys, 2190272 bytes
+2024/06/13-02:51:17.399 4c54 Generated table #677@1: 2947 keys, 2157477 bytes
+2024/06/13-02:51:17.441 4c54 Generated table #678@1: 2916 keys, 2153011 bytes
+2024/06/13-02:51:17.504 4c54 Generated table #679@1: 3627 keys, 2159903 bytes
+2024/06/13-02:51:17.559 4c54 Generated table #680@1: 5402 keys, 2165339 bytes
+2024/06/13-02:51:17.644 4c54 Generated table #681@1: 33615 keys, 2237756 bytes
+2024/06/13-02:51:17.743 4c54 Generated table #682@1: 29706 keys, 2261227 bytes
+2024/06/13-02:51:17.846 4c54 Generated table #683@1: 20524 keys, 2176849 bytes
+2024/06/13-02:51:17.852 4c54 Generated table #684@1: 89 keys, 20432 bytes
+2024/06/13-02:51:17.852 4c54 Compacted 1@1 + 8@2 files => 17522266 bytes
+2024/06/13-02:51:17.856 4c54 compacted to: files[ 0 1 18 0 0 0 0 ]
+2024/06/13-02:51:17.857 4c54 Delete type=2 #661
+2024/06/13-02:51:17.857 4c54 Delete type=2 #662
+2024/06/13-02:51:17.857 4c54 Delete type=2 #663
+2024/06/13-02:51:17.857 4c54 Delete type=2 #664
+2024/06/13-02:51:17.857 4c54 Delete type=2 #665
+2024/06/13-02:51:17.857 4c54 Delete type=2 #666
+2024/06/13-02:51:17.857 4c54 Delete type=2 #667
+2024/06/13-02:51:17.857 4c54 Delete type=2 #668
+2024/06/13-02:51:17.858 4c54 Delete type=2 #669
+2024/06/13-02:51:17.858 4c54 Delete type=2 #674
+2024/06/13-02:51:51.380 4c54 Compacting 1@1 + 3@2 files
+2024/06/13-02:51:51.491 4c54 Generated table #685@1: 106078 keys, 2255864 bytes
+2024/06/13-02:51:51.573 4c54 Generated table #686@1: 76158 keys, 1651048 bytes
+2024/06/13-02:51:51.573 4c54 Compacted 1@1 + 3@2 files => 3906912 bytes
+2024/06/13-02:51:51.577 4c54 compacted to: files[ 0 0 17 0 0 0 0 ]
+2024/06/13-02:51:51.578 4c54 Delete type=2 #611
+2024/06/13-02:51:51.578 4c54 Delete type=2 #612
+2024/06/13-02:51:51.578 4c54 Delete type=2 #613
+2024/06/13-02:51:51.578 4c54 Delete type=2 #675
