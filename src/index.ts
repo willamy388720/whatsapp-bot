@@ -1,13 +1,14 @@
-import { catchSuspiciousMessage } from "./services/api";
-import { Whatsapp, Message, Contact, Chat } from "venom-bot";
+import {
+  catchSuspiciousMessage,
+  createSuspiciousMessage,
+} from "./services/api";
+import { Whatsapp } from "venom-bot";
 import { formatPhoneNumber } from "./utils/formatPhoneNumber";
 
 const venom = require("venom-bot");
 
-// const CLIENT_NUMBER = "5511973977593";
-const CLIENT_NUMBER = "558594002572";
-// const CLIENT_NAME = "Junior";
-const CLIENT_NAME = "Willamy";
+const CLIENT_NUMBER = "5511973977593";
+const CLIENT_NAME = "Junior";
 
 venom
   .create(
@@ -39,13 +40,12 @@ venom
   });
 
 function start(client: Whatsapp) {
-  client.onMessage(async (message) => {
-    try {
+  try {
+    client.onMessage(async (message) => {
       const phoneNumber = message.sender.id.split("@")[0];
 
       const data = await catchSuspiciousMessage({
         message: message.body,
-        name: message.sender.name,
         phoneNumber,
       });
 
@@ -55,44 +55,71 @@ function start(client: Whatsapp) {
             `${CLIENT_NUMBER}@c.us`,
             `*Aviso Importante!*
 
-Prezado(a) ${CLIENT_NAME}, 
+  Prezado(a) ${CLIENT_NAME},
 
-Gostaríamos de alertá-lo(a) que o número ${formatPhoneNumber(
-              phoneNumber
-            )} está enviando mensagens fraudulentas no grupo ${message}, com a intenção de aplicar golpes. Pedimos que, por favor, tome as seguintes medidas de segurança:
+  Gostaríamos de alertá-lo(a) que o número ${formatPhoneNumber(
+    phoneNumber
+  )} está enviando mensagens fraudulentas no grupo ${message}, com a intenção de aplicar golpes. Pedimos que, por favor, tome as seguintes medidas de segurança:
 
-*Bloqueie o número:* Evite qualquer contato com o número em questão.
-*Não responda:* Não forneça nenhuma informação pessoal ou financeira.
-*Avise os outros:* Informe os demais integrantes do grupo para que também tomem precauções.
-*Reporte:* Caso tenha recebido mensagens suspeitas, reporte para que possamos tomar as devidas providências.
+  *Bloqueie o número:* Evite qualquer contato com o número em questão.
+  *Não responda:* Não forneça nenhuma informação pessoal ou financeira.
+  *Avise os outros:* Informe os demais integrantes do grupo para que também tomem precauções.
+  *Reporte:* Caso tenha recebido mensagens suspeitas, reporte para que possamos tomar as devidas providências.
 
-A sua segurança é nossa prioridade. Agradecemos pela atenção e colaboração.
+  A sua segurança é nossa prioridade. Agradecemos pela atenção e colaboração.
 
-Atenciosamente,`
+  *Deseja salvar o contato na nossa lista Negra? Responda com SIM ou NÃO*`
           );
         } else {
           client.sendText(
             `${CLIENT_NUMBER}@c.us`,
             `*Aviso Importante!*
-    
-Prezado(a) ${CLIENT_NAME}, 
 
-Gostaríamos de alertá-lo(a) que o número ${formatPhoneNumber(
-              phoneNumber
-            )} está enviando mensagens fraudulentas com a intenção de aplicar golpes. Pedimos que, por favor, tome as seguintes medidas de segurança:
+  Prezado(a) ${CLIENT_NAME},
 
-*Bloqueie o número:* Evite qualquer contato com o número em questão.
-*Não responda:* Não forneça nenhuma informação pessoal ou financeira.
-*Reporte:* Caso tenha recebido mensagens suspeitas, reporte para que possamos tomar as devidas providências.
+  Gostaríamos de alertá-lo(a) que o número ${formatPhoneNumber(
+    phoneNumber
+  )} está enviando mensagens fraudulentas com a intenção de aplicar golpes. Pedimos que, por favor, tome as seguintes medidas de segurança:
 
-A sua segurança é nossa prioridade. Agradecemos pela atenção e colaboração.
+  *Bloqueie o número:* Evite qualquer contato com o número em questão.
+  *Não responda:* Não forneça nenhuma informação pessoal ou financeira.
+  *Reporte:* Caso tenha recebido mensagens suspeitas, reporte para que possamos tomar as devidas providências.
 
-Atenciosamente,`
+  A sua segurança é nossa prioridade. Agradecemos pela atenção e colaboração.
+
+  Deseja salvar o contato na nossa lista Negra? Responda com SIM ou NÃO*`
           );
         }
+
+        customerDecision(
+          client,
+          message.body,
+          message.sender.name,
+          phoneNumber
+        );
       }
-    } catch (error) {
-      console.log(error);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function customerDecision(
+  client: Whatsapp,
+  maliciousMessage: string,
+  maliciousNameContact: string,
+  malicousPhoneNumberContact: string
+) {
+  client.onMessage(async (message) => {
+    if (
+      message.body.toLocaleLowerCase() === "sim" &&
+      message.from === `${CLIENT_NUMBER}@c.us`
+    ) {
+      await createSuspiciousMessage({
+        message: maliciousMessage,
+        name: maliciousNameContact,
+        phoneNumber: malicousPhoneNumberContact,
+      });
     }
   });
 }

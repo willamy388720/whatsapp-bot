@@ -9,22 +9,42 @@ export const api = axios.create({
 
 type SuspiciousMessage = {
   message: string;
-  name?: string | null;
-  photoUrl?: string | null;
   phoneNumber?: string | null;
 };
+
 export async function catchSuspiciousMessage({
   message,
-  name = null,
-  photoUrl = null,
   phoneNumber = null,
 }: SuspiciousMessage) {
   try {
     const { data } = await api.post("/suspicious_messages/catch", {
       message,
-      name,
-      photo_url: photoUrl,
       phone_number: phoneNumber,
+    });
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+type CreateSuspiciousMessage = SuspiciousMessage & {
+  name?: string | null;
+  photoUrl?: string | null;
+};
+
+export async function createSuspiciousMessage({
+  message,
+  name = null,
+  photoUrl = null,
+  phoneNumber = null,
+}: CreateSuspiciousMessage) {
+  try {
+    const { data } = await api.post("/suspicious_messages", {
+      message,
+      name,
+      phone_number: phoneNumber,
+      photo_url: photoUrl,
     });
 
     return data;
