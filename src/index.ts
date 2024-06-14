@@ -4,13 +4,12 @@ import {
 } from "./services/api";
 import { Message, Whatsapp } from "venom-bot";
 import { formatPhoneNumber } from "./utils/formatPhoneNumber";
+import { env } from "./env";
 
 const venom = require("venom-bot");
 
-const CLIENT_NUMBER = "558894960554";
-// const CLIENT_NUMBER = "5511973977593";
-const CLIENT_NAME = "Luis";
-// const CLIENT_NAME = "Junior";
+const CLIENT_NUMBER = env.CLIENT_NUMBER;
+const CLIENT_NAME = env.CLIENT_NAME;
 
 venom
   .create(
