@@ -2,13 +2,15 @@ import {
   catchSuspiciousMessage,
   createSuspiciousMessage,
 } from "./services/api";
-import { Whatsapp } from "venom-bot";
+import { Message, Whatsapp } from "venom-bot";
 import { formatPhoneNumber } from "./utils/formatPhoneNumber";
 
 const venom = require("venom-bot");
 
-const CLIENT_NUMBER = "5511973977593";
-const CLIENT_NAME = "Junior";
+const CLIENT_NUMBER = "558894960554";
+// const CLIENT_NUMBER = "5511973977593";
+const CLIENT_NAME = "Luis";
+// const CLIENT_NAME = "Junior";
 
 venom
   .create(
@@ -41,8 +43,14 @@ venom
 
 function start(client: Whatsapp) {
   try {
+    let maliciousMessage = "";
+    let maliciousPhoneNumber = "";
+    let maliciousContactName = "";
+
     client.onMessage(async (message) => {
       const phoneNumber = message.sender.id.split("@")[0];
+
+      // if (phoneNumber === CLIENT_NUMBER) return;
 
       const data = await catchSuspiciousMessage({
         message: message.body,
@@ -50,53 +58,65 @@ function start(client: Whatsapp) {
       });
 
       if (data.scam_detected) {
+        maliciousMessage = message.body;
+        maliciousPhoneNumber = phoneNumber;
+        maliciousContactName = message.sender.name;
+
         if (message.isGroupMsg) {
           client.sendText(
             `${CLIENT_NUMBER}@c.us`,
             `*Aviso Importante!*
 
-  Prezado(a) ${CLIENT_NAME},
+      Prezado(a) ${CLIENT_NAME},
 
-  Gostaríamos de alertá-lo(a) que o número ${formatPhoneNumber(
-    phoneNumber
-  )} está enviando mensagens fraudulentas no grupo ${message}, com a intenção de aplicar golpes. Pedimos que, por favor, tome as seguintes medidas de segurança:
+      Gostaríamos de alertá-lo(a) que o número ${formatPhoneNumber(
+        phoneNumber
+      )} está enviando mensagens fraudulentas no grupo ${
+              message.groupInfo.name
+            }, com a intenção de aplicar golpes. Pedimos que, por favor, tome as seguintes medidas de segurança:
 
-  *Bloqueie o número:* Evite qualquer contato com o número em questão.
-  *Não responda:* Não forneça nenhuma informação pessoal ou financeira.
-  *Avise os outros:* Informe os demais integrantes do grupo para que também tomem precauções.
-  *Reporte:* Caso tenha recebido mensagens suspeitas, reporte para que possamos tomar as devidas providências.
+      - *Bloqueie o número:* Evite qualquer contato com o número em questão.
+      - *Não responda:* Não forneça nenhuma informação pessoal ou financeira.
+      - *Avise os outros:* Informe os demais integrantes do grupo para que também tomem precauções.
+      - *Reporte:* Caso tenha recebido mensagens suspeitas, reporte para que possamos tomar as devidas providências.
 
-  A sua segurança é nossa prioridade. Agradecemos pela atenção e colaboração.
+      A sua segurança é nossa prioridade. Agradecemos pela atenção e colaboração.
 
-  *Deseja salvar o contato na nossa lista Negra? Responda com SIM ou NÃO*`
+      *Deseja salvar o contato na nossa lista Negra? Responda com SIM ou NÃO*`
           );
         } else {
           client.sendText(
             `${CLIENT_NUMBER}@c.us`,
             `*Aviso Importante!*
 
-  Prezado(a) ${CLIENT_NAME},
+      Prezado(a) ${CLIENT_NAME},
 
-  Gostaríamos de alertá-lo(a) que o número ${formatPhoneNumber(
-    phoneNumber
-  )} está enviando mensagens fraudulentas com a intenção de aplicar golpes. Pedimos que, por favor, tome as seguintes medidas de segurança:
+      Gostaríamos de alertá-lo(a) que o número ${formatPhoneNumber(
+        phoneNumber
+      )} está enviando mensagens fraudulentas com a intenção de aplicar golpes. Pedimos que, por favor, tome as seguintes medidas de segurança:
 
-  *Bloqueie o número:* Evite qualquer contato com o número em questão.
-  *Não responda:* Não forneça nenhuma informação pessoal ou financeira.
-  *Reporte:* Caso tenha recebido mensagens suspeitas, reporte para que possamos tomar as devidas providências.
+      - *Bloqueie o número:* Evite qualquer contato com o número em questão.
+      - *Não responda:* Não forneça nenhuma informação pessoal ou financeira.
+      - *Reporte:* Caso tenha recebido mensagens suspeitas, reporte para que possamos tomar as devidas providências.
 
-  A sua segurança é nossa prioridade. Agradecemos pela atenção e colaboração.
+      A sua segurança é nossa prioridade. Agradecemos pela atenção e colaboração.
 
-  Deseja salvar o contato na nossa lista Negra? Responda com SIM ou NÃO*`
+      Deseja salvar o contato na nossa lista Negra? Responda com SIM ou NÃO*`
           );
         }
+      }
 
-        customerDecision(
+      if (maliciousMessage !== "") {
+        await customerDecision(
           client,
-          message.body,
-          message.sender.name,
-          phoneNumber
+          message,
+          maliciousMessage,
+          maliciousContactName,
+          maliciousPhoneNumber
         );
+        maliciousMessage = "";
+        maliciousContactName = "";
+        maliciousPhoneNumber = "";
       }
     });
   } catch (error) {
@@ -104,22 +124,52 @@ function start(client: Whatsapp) {
   }
 }
 
-function customerDecision(
+async function customerDecision(
   client: Whatsapp,
+  message: Message,
   maliciousMessage: string,
   maliciousNameContact: string,
   malicousPhoneNumberContact: string
 ) {
-  client.onMessage(async (message) => {
-    if (
-      message.body.toLocaleLowerCase() === "sim" &&
-      message.from === `${CLIENT_NUMBER}@c.us`
-    ) {
+  if (
+    message.body.toLocaleLowerCase() === "sim" &&
+    message.from === `${CLIENT_NUMBER}@c.us`
+  ) {
+    try {
       await createSuspiciousMessage({
         message: maliciousMessage,
         name: maliciousNameContact,
         phoneNumber: malicousPhoneNumberContact,
       });
+
+      client.sendText(
+        `${CLIENT_NUMBER}@c.us`,
+        `Agradecemos por sua resposta. O número ${formatPhoneNumber(
+          malicousPhoneNumberContact
+        )} foi adicionado à nossa lista negra. Embora isso não impeça que ele envie mensagens através do WhatsApp, é uma medida preventiva importante.
+
+Recomendamos que você também bloqueie o número diretamente no WhatsApp para evitar futuros contatos indesejados. Continuamos à disposição para ajudar em qualquer outra dúvida ou questão de segurança.
+
+A sua segurança é nossa prioridade. Obrigado por colaborar conosco.`
+      );
+    } catch (error) {
+      throw error;
     }
-  });
+  } else {
+    client.sendText(
+      `${CLIENT_NUMBER}@c.us`,
+      `Agradecemos por sua resposta. Respeitamos sua decisão de não adicionar o número ${formatPhoneNumber(
+        malicousPhoneNumberContact
+      )} à nossa lista negra. 
+
+Lembramos que é importante continuar atento(a) e seguir as medidas de segurança recomendadas:
+- Bloqueie o número em seu dispositivo.
+- Não responda nem forneça informações pessoais ou financeiras.
+- Reporte qualquer mensagem suspeita que receber.
+
+Caso mude de ideia ou precise de assistência adicional, estamos à disposição para ajudar.
+
+A sua segurança é nossa prioridade. Obrigado por colaborar conosco.`
+    );
+  }
 }
