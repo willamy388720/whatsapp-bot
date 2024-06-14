@@ -24,7 +24,9 @@ Este projeto utiliza a biblioteca venom-bot para monitorar mensagens recebidas n
 
 ## Uso
 
-1. Com a ferramenta instalada, rode:
-   ```
-   npm run dev
-   ```
+1.  Instale as dependências necessárias.
+2.  Crie um documento `.env` na raiz do projeto, usando as variaveis presentes em `.env.example`.
+3.  Com a ferramenta instalada e as variaveis criadas, rode:
+    ```
+    npm run dev
+    ```
