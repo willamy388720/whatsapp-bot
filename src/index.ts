@@ -46,10 +46,14 @@ function start(client: Whatsapp) {
     let maliciousPhoneNumber = "";
     let maliciousContactName = "";
 
-    client.onMessage(async (message) => {
+    client.onMessage(async (message: any) => {
+      if (!message || !message.sender || !message.sender.id) {
+        return;
+      }
+
       const phoneNumber = message.sender.id.split("@")[0];
 
-      // if (phoneNumber === CLIENT_NUMBER) return;
+      if (phoneNumber === CLIENT_NUMBER) return;
 
       const data = await catchSuspiciousMessage({
         message: message.body,
@@ -105,7 +109,7 @@ function start(client: Whatsapp) {
         }
       }
 
-      if (maliciousMessage !== "") {
+      if (maliciousMessage !== "" && message.body !== maliciousMessage) {
         await customerDecision(
           client,
           message,
@@ -119,7 +123,7 @@ function start(client: Whatsapp) {
       }
     });
   } catch (error) {
-    console.log(error);
+    console.log("Foi aqui:", error);
   }
 }
 
@@ -154,7 +158,7 @@ A sua segurança é nossa prioridade. Obrigado por colaborar conosco.`
     } catch (error) {
       throw error;
     }
-  } else {
+  } else if (message.from === `${CLIENT_NUMBER}@c.us`) {
     client.sendText(
       `${CLIENT_NUMBER}@c.us`,
       `Agradecemos por sua resposta. Respeitamos sua decisão de não adicionar o número ${formatPhoneNumber(
